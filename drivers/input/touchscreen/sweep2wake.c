@@ -68,14 +68,7 @@ MODULE_LICENSE("GPLv2");
 #define SWEEP_RIGHT		0x01
 #define SWEEP_LEFT		0x02
 #define SWEEP_UP		0x04
-#define SWEEP_DOWN		0x08
-#define VIB_STRENGTH		20
-
-int gestures_switch = S2W_DEFAULT;
-static struct input_dev *gesture_dev;
-extern void gestures_setdev(struct input_dev * input_device);
-extern void set_vibrate(int value);
-int vib_strength = VIB_STRENGTH;	
+#define SWEEP_DOWN		0x08	
 
 /* Resources */
 int s2w_switch = S2W_DEFAULT, s2w_s2sonly = S2W_S2SONLY_DEFAULT;
@@ -116,18 +109,6 @@ static int __init read_s2w_cmdline(char *s2w)
 	return 1;
 }
 __setup("s2w=", read_s2w_cmdline);
-
-static void report_gesture(int gest)
-{
-        pwrtrigger_time[1] = pwrtrigger_time[0];
-        pwrtrigger_time[0] = jiffies;	
-
-	if (pwrtrigger_time[0] - pwrtrigger_time[1] < TRIGGER_TIMEOUT)
-		return;
-
-	pr_info(LOGTAG"gesture = %d\n", gest);
-	input_report_rel(gesture_dev, WAKE_GESTURE, gest);
-	input_sync(gesture_dev);
 
 /* PowerKey work func */
 static void sweep2wake_presspwr(struct work_struct * sweep2wake_presspwr_work) {
@@ -261,12 +242,7 @@ static void detect_sweep2wake_h(int x, int y, bool st, bool wake)
  					if (x > (DEFAULT_S2W_X_MAX - DEFAULT_S2W_X_FINAL)) {
 						if (exec_countx) {
 							pr_info(LOGTAG"sweep right\n");
-							set_vibrate(vib_strength);
-							if (gestures_switch && wake) {
-								report_gesture(1);
-							} else {
-						        	sweep2wake_pwrtrigger();
-							}
+								sweep2wake_pwrtrigger();
 								exec_county = false;
 						}
 					}
@@ -291,12 +267,7 @@ static void detect_sweep2wake_h(int x, int y, bool st, bool wake)
  					if (x < DEFAULT_S2W_X_FINAL) {
 						if (exec_countx) {
 							pr_info(LOGTAG"sweep left\n");
-						        set_vibrate(vib_strength);
-							if (gestures_switch && wake) {
-								report_gesture(2);
-							} else {
-						        	sweep2wake_pwrtrigger();
-							}
+						        sweep2wake_pwrtrigger();
 							exec_countx = false;
 						}
 					}
@@ -687,22 +658,6 @@ static int __init sweep2wake_init(void)
 	if (rc)
 		pr_err("%s: Failed to register s2w_input_handler\n", __func__);
 
-	gesture_dev = input_allocate_device();
-	if (!gesture_dev) {
-		goto err_alloc_dev;
-	}
-
-	gesture_dev->name = "wake_gesture";
-	gesture_dev->phys = "wake_gesture/input0";
-	input_set_capability(gesture_dev, EV_REL, WAKE_GESTURE);
-
-	rc = input_register_device(gesture_dev);
-	if (rc) {
-		pr_err("%s: input_register_device err=%d\n", __func__, rc);
-		goto err_input_dev;
-	}
-	gestures_setdev(gesture_dev);
-
 #ifdef CONFIG_POWERSUSPEND
 	register_power_suspend(&s2w_power_suspend_handler);
 #endif
@@ -724,14 +679,6 @@ static int __init sweep2wake_init(void)
 	rc = sysfs_create_file(android_touch_kobj, &dev_attr_sweep2wake_version.attr);
 	if (rc) {
 		pr_warn("%s: sysfs_create_file failed for sweep2wake_version\n", __func__);
-	}
-	rc = sysfs_create_file(android_touch_kobj, &dev_attr_wake_gestures.attr);
-	if (rc) {
-		pr_warn("%s: sysfs_create_file failed for wake_gestures\n", __func__);
-	}
-	rc = sysfs_create_file(android_touch_kobj, &dev_attr_vib_strength.attr);
-	if (rc) {
-		pr_warn("%s: sysfs_create_file failed for vib_strength\n", __func__);
 	}
 
 err_input_dev:
