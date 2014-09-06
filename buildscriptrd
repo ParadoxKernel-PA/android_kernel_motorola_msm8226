@@ -5,7 +5,7 @@
 # the appropriate lines for dtbTool to compile it, if not prebuilt.
 build=/home/yoshishapow/Green_Machine
 kernel="The-Green-Machine"
-version="Tv6"
+version="4.0.0"
 variant="cmvariant"
 ramdisk=ramdisk
 kerneltype="zImage-dtb"
