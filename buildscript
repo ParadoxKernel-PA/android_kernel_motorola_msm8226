@@ -5,7 +5,7 @@
 # the appropriate lines for dtbTool to compile it, if not prebuilt.
 build=/home/yoshishapow/Green_Machine
 kernel="The-Green-Machine"
-version="Tv6"
+version="Tv7"
 rom="cmvariant"
 ramdisk=ramdisk
 toolchain=/home/yoshishapow/linaro_toolchain/bin/
@@ -20,7 +20,7 @@ tags_offset=0x00000100
 cmdline="console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 vmalloc=400M utags.blkdev=/dev/block/platform/msm_sdcc.1/by-name/utags androidboot.write_protect=0 zcache androidboot.selinux=permissive"
 
 if [ "$1" = "local" ]; then
-	build=/home/yoshishapow/green_machine_balanced_falcon
+	build=/home/yoshishapow/green_machine_test
 	toolchain=/home/yoshishapow/linaro_toolchain/bin
 fi
 
