@@ -32,6 +32,9 @@ modules.builtin
 *.lzo
 *.patch
 *.gcno
+*.img
+arch/arm/mach-msm/smd_rpc_sym.c
+
 
 #
 # Top-level generic files
