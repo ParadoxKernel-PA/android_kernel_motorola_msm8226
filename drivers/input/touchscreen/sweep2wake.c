@@ -572,7 +572,7 @@ static void s2w_power_suspend(struct power_suspend *h) {
 	s2w_scr_suspended = true;
 }
 
-static void s2w_late_resume(struct power_suspend *h) {
+static void s2w_power_resume(struct power_suspend *h) {
 	s2w_scr_suspended = false;
 }
 
