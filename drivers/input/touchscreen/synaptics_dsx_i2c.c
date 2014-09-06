@@ -3697,10 +3697,9 @@ static int synaptics_rmi4_suspend(struct device *dev)
 			rmi4_data->board;
 
 #ifdef CONFIG_TOUCHSCREEN_PREVENT_SLEEP
-	if ((s2w_switch == 1) || (dt2w_switch)) {
- 		pr_info("suspend avoided!\n");
- 		return 0;
-	} else {
+	if (s2w_switch == 1 || dt2w_switch)
+	{
+		if (prox_covered) {
 #endif
 	synaptics_dsx_sensor_state(rmi4_data, STATE_SUSPEND);
 	rmi4_data->poweron = false;
