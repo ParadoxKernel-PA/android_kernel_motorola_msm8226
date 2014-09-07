@@ -6,7 +6,7 @@
 build=/home/yoshishapow/Green_Machine
 kernel="The-Green-Machine"
 version="4.0.0"
-variant="cmvariant"
+variant="Wake-Gesture-Version"
 ramdisk=ramdisk
 kerneltype="zImage-dtb"
 ps=2048
